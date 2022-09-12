@@ -41,6 +41,23 @@ def __DICT_Style_3__(command: list, menu: dict) -> list:
     return command + cmd
 
 
+def __DATE_TIME__(command: list, X: int = None, Y: int = None, Z: int = None) -> list:
+    cmd = []
+    if X is not None:
+        cmd.append(str(X))
+    else:
+        cmd.append('0')
+    if Y is not None:
+        cmd.append(str(Y))
+    else:
+        cmd.append('0')
+    if Z is not None:
+        cmd.append(str(Z))
+    else:
+        cmd.append('0')
+    return command + cmd
+
+
 class Args:
     WINDOW_AUTOSIZE = 0
     WINDOW_MAXSIZE = -1
@@ -141,7 +158,23 @@ class Window:
         cmd.insert(5, Message)
         cmd.append(str(menu_height))
         out = Shell(__DICT_Style_1__(cmd, menu_dict))
-        return out.returncode, out.stdout.decode('utf-8').replace(" ", ",")
+        return out.returncode, out.stdout.decode('utf-8').split()
+
+    def InputMenu(self, Message: str, inputmenu_height: int, inputmenu_dict: dict) -> tuple:
+        """
+
+        :param Message: 消息文本
+        :param inputmenu_height: 菜单高度
+        :param inputmenu_dict: 菜单字典
+        example: {'tag1':'name','tag2':'name'}
+        :return: 返回一个元组，如果用户未点击RENAME按钮 将只会返回一个状态码，如果点击了RENAME按钮则会返回 ['RENAME','TAG1','Name']
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--inputmenu')
+        cmd.insert(5, Message)
+        cmd.append(str(inputmenu_height))
+        out = Shell(__DICT_Style_1__(cmd, inputmenu_dict))
+        return out.returncode, out.stdout.decode('utf-8').split()
 
     def TwoChoseList(self, Message: str, tclist_height: int, tclist_dict: dict) -> tuple:
         """
@@ -157,10 +190,10 @@ class Window:
         cmd.insert(4, '--buildlist')
         cmd.insert(5, Message)
         cmd.append(str(tclist_height))
-        out = Shell(__DICT_Style_3__(cmd, tclist_dict))
-        return out.returncode, out.stdout.decode('utf-8').replace(" ", ",")
+        out = Shell(__DICT_Style_2__(cmd, tclist_dict))
+        return out.returncode, out.stdout.decode('utf-8').split()
 
-    def DataChose(self, Message: str, Year: int = None, Month: int = None, Day: int = None) -> tuple:
+    def DateChose(self, Message: str, Year: int = None, Month: int = None, Day: int = None) -> tuple:
         """
         日期选择器
 
@@ -173,26 +206,30 @@ class Window:
         cmd = self.cmd
         cmd.insert(4, '--calendar')
         cmd.insert(5, Message)
-        if Day is not None:
-            cmd.append(str(Day))
-        else:
-            cmd.append('0')
-        if Month is not None:
-            cmd.append(str(Month))
-        else:
-            cmd.append('0')
-        if Year is not None:
-            cmd.append(str(Year))
-        else:
-            cmd.append('0')
-        out = Shell(cmd)
-        return out.returncode, out.stdout.decode('utf-8').replace("/", ",")
+        out = Shell(__DATE_TIME__(cmd, Year, Month, Day))
+        return out.returncode, out.stdout.decode('utf-8').split('/')
+
+    def TimeChose(self, Message: str, hour: int = None, minute: int = None, second: int = None) -> tuple:
+        """
+        时间选择
+
+        :param Message: 消息文本
+        :param hour: 默认年
+        :param minute: 默认月
+        :param second: 默认日
+        :return: 返回一个元组 包含 状态码 用户选择的日期(DD:MM:YY)
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--timebox')
+        cmd.insert(5, Message)
+        out = Shell(__DATE_TIME__(cmd, hour, minute, second))
+        return out.returncode, out.stdout.decode('utf-8').split(':')
 
     def CheckList(self, Message: str, checklist_height: int, checklist_dict: dict) -> tuple:
         """
         选择框列表
 
-        :param Message: 消息列表
+        :param Message: 消息文本
         :param checklist_height: 列表高度
         :param checklist_dict: 传入一个字典
         example: {'tag1':['show_name','On / Off']}
@@ -203,7 +240,24 @@ class Window:
         cmd.insert(5, Message)
         cmd.insert(6, str(checklist_height))
         out = Shell(__DICT_Style_2__(cmd, checklist_dict))
-        return out.returncode, out.stdout.decode('utf-8').replace(" ", ",")
+        return out.returncode, out.stdout.decode('utf-8').split()
+
+    def RadioList(self, Message: str, radiolist_height: int, radiolist_dict: dict) -> tuple:
+        """
+        选择框列表 - 只能选择一个
+
+        :param Message: 消息文本
+        :param radiolist_height: 列表高度
+        :param radiolist_dict: 传入一个字典
+        example: {'tag1':['show_name','On / Off']}
+        :return: 返回一个元组 包含 状态码 和 用户选择的 TAG
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--radiolist')
+        cmd.insert(5, Message)
+        cmd.insert(6, str(radiolist_height))
+        out = Shell(__DICT_Style_2__(cmd, radiolist_dict))
+        return out.returncode, out.stdout.decode('utf-8').split()
 
     def DirectorySelect(self, dir_path: str) -> tuple:
         """
@@ -277,20 +331,134 @@ class Window:
         out = Shell(cmd)
         return out.returncode, out.stdout.decode('utf-8')
 
+    def RunCommand(self, Message: str, command: str) -> int:
+        """
+        运行命令并将返回结果到窗口
+
+        :param Message: 消息文本
+        :param command: 命令
+        :return: 返回一个状态码
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--prgbox')
+        cmd.insert(5, Message)
+        cmd.insert(6, command)
+        out = Shell(cmd)
+        return out.returncode
+
+    def TailBox(self, file: str) -> int:
+        """
+        监控日志或者是文件更新的实时内容并输出到窗口
+
+        :param file: 文件路径
+        :return: 返回一个状态码
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--tailbox')
+        cmd.insert(5, file)
+        out = Shell(cmd)
+        return out.returncode
+
+    def TailBoxBG(self, file: str) -> int:
+        """
+        研究中...应该也是和tailbox一样来监控日志或者是文件更新的实时内容的，从命命来看应该是直接输出到背景
+
+        :param file: 文件路径
+        :return: 返回一个状态码
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--tailboxbg')
+        cmd.insert(5, file)
+        out = Shell(cmd)
+        return out.returncode
+
+    def ProgressBar(self, Message: str, percent: int) -> int:
+        """
+        进度条
+
+        :param Message: 消息文本
+        :param percent: 进度
+        :return: 返回一个状态码
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--gauge')
+        cmd.insert(5, Message)
+        cmd.append(str(percent))
+        out = Shell(cmd)
+        return out.returncode
+
+    def MixedProgressBar(self, Message: str, percent: int, menu_dict: dict) -> int:
+        """
+        混合进度条 包含进度条和菜单字典
+
+        :param Message: 消息文本
+        :param percent: 进度
+        :param menu_dict: 菜单字典,我推荐这样用
+        example: {'name1':'status','name1':'status'}
+        :return: 返回一个状态码
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--mixedgauge')
+        cmd.insert(5, Message)
+        cmd.append(str(percent))
+        out = Shell(__DICT_Style_1__(cmd, menu_dict))
+        return out.returncode
+
+    def CountdownConfirm(self, Message: str, seconds: int) -> int:
+        """
+        倒计时确认窗体
+
+        :param Message: 消息文本
+        :param seconds: 倒计时时间
+        :return: 返回一个状态码
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--pause')
+        cmd.insert(5, Message)
+        cmd.append(str(seconds))
+        out = Shell(cmd)
+        return out.returncode
+
+    def RangeChose(self, Message: str, min_range: int, max_range: int, step: int) -> tuple:
+        """
+        范围选择窗口
+
+        :param Message: 消息文本
+        :param min_range: 最小值
+        :param max_range: 最大值
+        :param step: 每次步进的值
+        :return: 返回一个元组 包含 状态码 和 用户选择的值
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--rangebox')
+        cmd.insert(5, Message)
+        cmd.append(str(min_range))
+        cmd.append(str(max_range))
+        cmd.append(str(step))
+        out = Shell(cmd)
+        return out.returncode, out.stdout.decode('utf-8')
+
+    def TreeList(self,Message:str,treelist_height:int,treelist_dict:dict) -> tuple:
+        """
+        依旧是一个选择框，以树状显示，不会显示TAG
+
+        :param Message: 消息文本
+        :param treelist_height: 列表高度
+        :param treelist_dict: 一个字典
+        example: {'tag1':['name1','On / Off','位于树结构的具体深度值']}
+        :return: 返回一个元组 包含 状态码 和用户选择的TAG
+        """
+        cmd = self.cmd
+        cmd.insert(4, '--treeview')
+        cmd.insert(5, Message)
+        cmd.append(str(treelist_height))
+        out = Shell(__DICT_Style_3__(cmd,treelist_dict))
+        return out.returncode, out.stdout.decode('utf-8')
+
 # TODO: add more function
 # --form         <text> <height> <width> <form height> <label1> <l_y1> <l_x1> <item1> <i_y1> <i_x1> <flen1> <ilen1>...
-# --gauge        <text> <height> <width> [<percent>]
-# --inputmenu    <text> <height> <width> <menu height> <tag1> <item1>...
 # --mixedform    <text> <height> <width> <form height> <label1> <l_y1> <l_x1> <item1> <i_y1> <i_x1> <flen1> <ilen1> <itype>...
-# --mixedgauge   <text> <height> <width> <percent> <tag1> <item1>...
 # --passwordform <text> <height> <width> <form height> <label1> <l_y1> <l_x1> <item1> <i_y1> <i_x1> <flen1> <ilen1>...
-# --pause        <text> <height> <width> <seconds>
-# --prgbox       <text> <command> <height> <width>
+
 # --programbox   <text> <height> <width>
 # --progressbox  <text> <height> <width>
-# --radiolist    <text> <height> <width> <list height> <tag1> <item1> <status1>...
-# --rangebox     <text> <height> <width> <min-value> <max-value> <default-value>
-# --tailbox      <file> <height> <width>
-# --tailboxbg    <file> <height> <width>
-# --timebox      <text> <height> <width> <hour> <minute> <second>
-# --treeview     <text> <height> <width> <list-height> <tag1> <item1> <status1> <depth1>...

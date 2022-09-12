@@ -22,6 +22,18 @@
 - DirectoryChose (--dselect)
 - EditBox (--editbox)
 - FileSelect (--fselect)
+- ProgressBar (--gauge)
+- InputMenu (--inputmenu)
+- MixedProgressBar (--mixedgauge)
+- CountdownConfirm (--pause)
+- RunCommand (--prgbox)
+- RadioBox (--radiobox)
+- RangeChose (--rangebox)
+- TailBox (--tailbox)
+- TailBoxBG (--tailboxbg)
+- TimeChose (--timebox)
+- TailBoxBG (--tailboxbg)
+- TreeList (--treeview)
 
 ### 如何使用?
 请先安装 Dialog 在你的运行或开发环境中
@@ -51,5 +63,5 @@ print(out) # 在命令执行完成后返回一个状态码
 | 1   | 取消  |
 | 255 | ESC |
 
-### License
-[MIT](License.txt)
+### 许可
+[MIT](./License.txt)
