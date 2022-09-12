@@ -1,8 +1,9 @@
-## 一个基于 Dialog 的 TUI
+## 一个基于 Dialog 的 Python TUI
 [ENGLISH](README_EN.MD) - **By Google Translate**
 
 通过把 Dialog 的各种参数抽象到 Python 的函数中
 在 Python 中更方便的调用
+本质还是通过运行 Dialog 命令并附加参数然后通过管道获取输出的内容
 
 支持平台: Linux,Unix,macOS
 
