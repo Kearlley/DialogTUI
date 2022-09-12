@@ -15,6 +15,12 @@
 - InputBox (--inputbox)
 - PasswordBox (--passwordbox)
   - 默认启用 * 来代替输入的字符显示 (--insecure)
+- TwoChoseList (--buildlist)
+- DataChose (--calendar)
+- CheckList (--checklist)
+- DirectoryChose (--dselect)
+- EditBox (--editbox)
+- FileSelect (--fselect)
 
 ### 如何使用?
 请先安装 Dialog 在你的运行或开发环境中
@@ -25,8 +31,13 @@
 ```python
 import DialogTUI as ui
 
-window = ui.Window('Window Title', 20, 30) # 窗口标题, 高, 宽,
-out = window.MessageBox('Hello World!') # 文本
+out = ui.Window(
+  'Window Title',
+  20, 
+  30 # 
+).MessageBox(
+  'Hello World!'# 文本
+) 
 print(out) # 在命令执行完成后返回一个状态码 
 ```
 
