@@ -9,7 +9,6 @@ def Shell(cmd):
 
     :type cmd: list
     :param cmd: 命令
-    :return:
     """
     return sp.run(cmd, stdout=sp.PIPE)
 
@@ -79,15 +78,13 @@ class Window:
 
     def __init__(self, title, height, width):
         self.title = title
-        self.height = height
-        self.width = width
         self.cmd = [
             'dialog',
             '--stdout',
             '--title', self.title,
             # 4 -- window , # 5 text
-            str(self.height),
-            str(self.width),
+            str(height),
+            str(width),
         ]
         # --no-shadow 无阴影
 
@@ -98,7 +95,7 @@ class Window:
         :param Message: 信息文本
         :return: 状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--msgbox')
         cmd.insert(5, Message)
         out = Shell(cmd)
@@ -111,7 +108,7 @@ class Window:
         :param Message: 消息文本
         :return: 状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--infobox')
         cmd.insert(5, Message)
         out = Shell(cmd)
@@ -124,7 +121,7 @@ class Window:
         :param file: 文件路径
         :return: 状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--textbox')
         cmd.insert(5, file)
         out = Shell(cmd)
@@ -137,7 +134,7 @@ class Window:
         :param Message: 消息文本
         :return: 状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--yesno')
         cmd.insert(5, Message)
         out = Shell(cmd)
@@ -153,7 +150,7 @@ class Window:
         example: {'tag1':'name','tag2':'name'}
         :returns: 返回一个元组 包含状态码 用户选择的 TAG 值
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--menu')
         cmd.insert(5, Message)
         cmd.append(str(menu_height))
@@ -169,7 +166,7 @@ class Window:
         example: {'tag1':'name','tag2':'name'}
         :return: 返回一个元组，如果用户未点击RENAME按钮 将只会返回一个状态码，如果点击了RENAME按钮则会返回 ['RENAME','TAG1','Name']
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--inputmenu')
         cmd.insert(5, Message)
         cmd.append(str(inputmenu_height))
@@ -186,7 +183,7 @@ class Window:
         example: {'tag1':['show_name','On / Off']}
         :return: 返回一个元组 包含 状态码 用户选择所对应的TAG
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--buildlist')
         cmd.insert(5, Message)
         cmd.append(str(tclist_height))
@@ -203,7 +200,7 @@ class Window:
         :param Day: 默认日
         :return: 返回一个元组 包含 状态码 用户选择的日期(DD:MM:YY)
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--calendar')
         cmd.insert(5, Message)
         out = Shell(__DATE_TIME__(cmd, Year, Month, Day))
@@ -219,7 +216,7 @@ class Window:
         :param second: 默认日
         :return: 返回一个元组 包含 状态码 用户选择的日期(DD:MM:YY)
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--timebox')
         cmd.insert(5, Message)
         out = Shell(__DATE_TIME__(cmd, hour, minute, second))
@@ -235,7 +232,7 @@ class Window:
         example: {'tag1':['show_name','On / Off']}
         :return: 返回一个元组 包含 状态码 和 用户选择的 TAG
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--checklist')
         cmd.insert(5, Message)
         cmd.insert(6, str(checklist_height))
@@ -252,7 +249,7 @@ class Window:
         example: {'tag1':['show_name','On / Off']}
         :return: 返回一个元组 包含 状态码 和 用户选择的 TAG
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--radiolist')
         cmd.insert(5, Message)
         cmd.insert(6, str(radiolist_height))
@@ -266,7 +263,7 @@ class Window:
         :param dir_path: 指定一个初始路径位置
         :return: 返回一个元组 包含 状态码 和 用户选择或输入的相对路径
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--dselect')
         cmd.insert(5, dir_path)
         out = Shell(cmd)
@@ -279,7 +276,7 @@ class Window:
         :param file_path: 指定一个初始文件位置
         :return: 返回一个元组 包含 状态码 和 用户选择或输入的相对路径
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--fselect')
         cmd.insert(5, file_path)
         out = Shell(cmd)
@@ -293,7 +290,7 @@ class Window:
         :param Message: 消息文本
         :return: 状态码 用户输入信息
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--inputbox')
         cmd.insert(5, Message)
         if init is not None:
@@ -309,7 +306,7 @@ class Window:
         :param init: 初始内容 [可选]
         :return: 状态码 用户输入信息
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--insecure')
         cmd.insert(5, '--passwordbox')
         cmd.insert(6, Message)
@@ -325,7 +322,7 @@ class Window:
         :param file: 文件路径
         :return: 返回一个元组 包含 状态码 和 用户编辑的内容
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--editbox')
         cmd.insert(5, file)
         out = Shell(cmd)
@@ -339,7 +336,7 @@ class Window:
         :param command: 命令
         :return: 返回一个状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--prgbox')
         cmd.insert(5, Message)
         cmd.insert(6, command)
@@ -353,7 +350,7 @@ class Window:
         :param file: 文件路径
         :return: 返回一个状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--tailbox')
         cmd.insert(5, file)
         out = Shell(cmd)
@@ -366,7 +363,7 @@ class Window:
         :param file: 文件路径
         :return: 返回一个状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--tailboxbg')
         cmd.insert(5, file)
         out = Shell(cmd)
@@ -380,7 +377,7 @@ class Window:
         :param percent: 进度
         :return: 返回一个状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--gauge')
         cmd.insert(5, Message)
         cmd.append(str(percent))
@@ -397,7 +394,7 @@ class Window:
         example: {'name1':'status','name1':'status'}
         :return: 返回一个状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--mixedgauge')
         cmd.insert(5, Message)
         cmd.append(str(percent))
@@ -412,7 +409,7 @@ class Window:
         :param seconds: 倒计时时间
         :return: 返回一个状态码
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--pause')
         cmd.insert(5, Message)
         cmd.append(str(seconds))
@@ -429,7 +426,7 @@ class Window:
         :param step: 每次步进的值
         :return: 返回一个元组 包含 状态码 和 用户选择的值
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--rangebox')
         cmd.insert(5, Message)
         cmd.append(str(min_range))
@@ -448,7 +445,7 @@ class Window:
         example: {'tag1':['name1','On / Off','位于树结构的具体深度值']}
         :return: 返回一个元组 包含 状态码 和用户选择的TAG
         """
-        cmd = self.cmd
+        cmd = [] + self.cmd
         cmd.insert(4, '--treeview')
         cmd.insert(5, Message)
         cmd.append(str(treelist_height))
