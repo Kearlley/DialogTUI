@@ -11,10 +11,6 @@ window = ui.Window(
     Args.NO_SHADOW
 )
 
-# 还可以创建一个JSON文件来写每个窗口的样式来更好的维护
-# Example:
-MenuDesign = ui.LoadJsonDesign('example.json')
-
 # 这种是变量传递，硬编码方式
 menu_out = window.Menu(
     'Hello World!',  # 文本
@@ -25,6 +21,10 @@ menu_out = window.Menu(
         '3': 'Im Json Menu'
     }  # 菜单列表
 )  # 在用户确认后返回一个元组，包含 状态码 和 用户选择 的内容
+
+# 还可以创建一个JSON文件来写每个窗口的样式来更好的维护
+# Example:
+MenuDesign = ui.LoadJsonDesign('example.json')
 
 match menu_out[1][0]:
     case '1':  # If Chose 1
