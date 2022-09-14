@@ -11,11 +11,11 @@ window = ui.Window(
     Args.NO_SHADOW
 )
 
-# 这种是变量传递，硬编码方式
 # 还可以创建一个JSON文件来写每个窗口的样式来更好的维护
 # Example:
 MenuDesign = ui.LoadJsonDesign('example.json')
 
+# 这种是变量传递，硬编码方式
 menu_out = window.Menu(
     'Hello World!',  # 文本
     4,  # 菜单高度
