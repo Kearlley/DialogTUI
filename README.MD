@@ -34,6 +34,10 @@
 - TimeChose (--timebox)
 - TailBoxBG (--tailboxbg)
 - TreeList (--treeview)
+- FormBox (--form)
+- FormPassword (--passwordform)
+  - 默认启用 * 来代替输入的字符显示 (--insecure)
+- FormMixed (--mixedform)
 
 ### 如何使用?
 请先安装 Dialog 在你的运行或开发环境中
@@ -41,17 +45,18 @@
 然后将 [DialogTUI.py](./DialogTUI.py) 复制到你的项目中
 
 然后在同级目录创建一个Python文件，键入
+
 ```python
 import DialogTUI as ui
 
 out = ui.Window(
   'Window Title',
-  20, 
-  30 # 
+  20,  # 高
+  30  # 宽
 ).MessageBox(
-  'Hello World!'# 文本
-) 
-print(out) # 在命令执行完成后返回一个状态码 
+  'Hello World!'  # 文本
+)
+print(out)  # 在命令执行完成后返回一个状态码 
 ```
 
 ### 指南
